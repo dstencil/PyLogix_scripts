@@ -9,22 +9,50 @@ if microstatus == 'y':
 else:
     microstatus = False
 dateformat = datetime.datetime.now()
-files = "{}_{}.csv".format(IP,dateformat.strftime("%m%d%y"))
-with PLC(IP) as comm:
-        
-        comm.Micro800 = microstatus
+date_formatted = dateformat.strftime("%m%d%y")
+files = f"{IP}_{date_formatted}.csv"
+with PLC() as comm:
+        comm.IPAddress = IP
+        tags = comm.GetTagList()
+        fieldnames = [        
+        'TagName',
+        'InstanceID',
+        'SymbolType',
+        'DataTypeValue',
+        'DataType',
+        'Array',
+        'Struct',
+        'Size',
+        'AccessRight',
+        'Internal',
+        'Meta',
+        'Scope0',
+        'Scope1',
+        'Bytes']
        
-        with open(files, 'w') as csvfile: 
-            tags = comm.GetTagList()
-            fieldnames = ['Time','IP','Tag','Value', 'Data Type', 'Status']
-            tagdict = {IP: []}
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            for t in tags.Value:
-                tagread = comm.Read(t.TagName)
-                tagdict[IP].append({tagread.TagName: {'Value': tagread.Value,'Data Type':t.DataType,'Status':tagread.Status}})
-                writer.writeheader()
-                writer.writerow({'IP':IP,'Tag': tagread.TagName,'Value': tagread.Value,'Data Type':t.DataType,'Status':tagread.Status})
+        comm.Micro800 = microstatus
 
+       
+        with open(files, 'w') as f: 
+            f = csv.writer(f, delimiter=',', lineterminator = '\n', quotechar='/',quoting=csv.QUOTE_MINIMAL)
+            f.writerow(fieldnames)
+            for t in tags.Value:
+                f.writerow([        
+                    t.TagName,
+                    t.InstanceID,
+                    t.SymbolType,
+                    t.DataTypeValue,
+                    t.DataType,
+                    t.Array,
+                    t.Struct,
+                    t.Size,
+                    t.AccessRight,
+                    t.Internal,
+                    t.Meta,
+                    t.Scope0,
+                    t.Scope1,
+                    t.Bytes])
+            
 
 
         print('Tag Data written to {}'.format(files))
