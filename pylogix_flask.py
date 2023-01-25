@@ -65,7 +65,24 @@ def read_programs():
             f.writerow([program['Program Name'], program['IP Address']]) 
 
     return 'Programs stored to CSV file.'
+@app.route('/read_tags', methods=['POST'])
+def read_tags():
+    df = pd.read_csv('devicestore.csv')
+    tags = []
 
+    for index, row in df.iterrows():
+        comm.IPAddress = row['IP Address']
+        taglist = comm.Read('TagList', 1)
+        for tag in taglist.Value:
+            tags.append({'Tag Name': tag, 'IP Address': str(comm.IPAddress)})
+
+    with open('tagstore.csv', 'w') as f:
+        f = csv.writer(f, delimiter=',', lineterminator = '\n', quotechar='/',quoting=csv.QUOTE_MINIMAL)
+        f.writerow(fieldnames)
+        for tag in tags:
+            f.writerow([tag['Tag Name'], tag['IP Address']]) 
+
+    return 'Tags stored to CSV file.'
 
 if __name__ == '__main__':
     app.run(debug=True)
