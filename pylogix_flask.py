@@ -134,8 +134,6 @@ def discover_devices():
             for device in devices.Value:
                 f.writerow([device.IPAddress, device.ProductName, device.Vendor, device.Revision, device.SerialNumber,device.DeviceID]) 
               
-           
-            return dictionary
         
     # Read the CSV file
     df = pd.read_csv('devicestore.csv')
@@ -171,7 +169,8 @@ def read_programs():
         for program in programs:
             f.writerow([program['Program Name'], program['IP Address']]) 
 
-    return 'Programs stored to CSV file.'
+    
+    return render_template('programstore.html', tags=html_string)
 @app.route('/read_tags', methods=['POST'])
 def read_tags():
     df = pd.read_csv('devicestore.csv')
@@ -191,22 +190,25 @@ def read_tags():
 
     return 'Tags stored to CSV file.'
     # Read the CSV file
-df = pd.read_csv('tagstore.csv')
+    df = pd.read_csv('tagstore.csv')
 
 # Create the HTML string to display the data
-html_string = '<table>'
-html_string += '<tr>'
-html_string += '<th>Tag Name</th>'
-html_string += '<th>IP Address</th>'
-html_string += '</tr>'
-for index, row in df.iterrows():
+    html_string = '<table>'
     html_string += '<tr>'
-    html_string += '<td>' + row['Tag Name'] + '</td>'
-    html_string += '<td>' + row['IP Address'] + '</td>'
+    html_string += '<th>Tag Name</th>'
+    html_string += '<th>IP Address</th>'
     html_string += '</tr>'
-html_string += '</table>'
+    for index, row in df.iterrows():
+        html_string += '<tr>'
+        html_string += '<td>' + row['Tag Name'] + '</td>'
+        html_string += '<td>' + row['IP Address'] + '</td>'
+        html_string += '</tr>'
+    html_string += '</table>'
 
-# Pass the HTML string to the template
-return render_template('tags.html', tags=html_string)
+    # Pass the HTML string to the template
+    return render_template('tags.html', tags=html_string)
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
