@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Device Discovery App</title>
+    <style>
+      #devices-list {
+        font-family: monospace;
+        font-size: 14px;
+        white-space: pre;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Device Discovery App</h1>
+    <p>
+      This page displays the devices from the <code>devicestore.csv</code> file.
+    </p>
+    <h2>Discovered Devices</h2>
+    <pre id="devices-list">
+      {{ devices }}
+    </pre>
+  </body>
+</html>
