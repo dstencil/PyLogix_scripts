@@ -38,6 +38,22 @@ if not os.path.exists('data/tagstore.csv'):
         f = csv.writer(f, delimiter=',', lineterminator = '\n', quotechar='/',quoting=csv.QUOTE_MINIMAL)
         fieldnames = ['Tag Name', 'IP Address']
         f.writerow(fieldnames)
+        
+if not os.path.exists('templates/index.html'):
+    with open('templates/index.html', 'w') as f:
+        f.write('<html>\n')
+        f.write('    <head>\n')
+        f.write('    <link rel="stylesheet" type="text/css" href="../static/style.css">\n')
+        f.write('        <title>Device Discovery Homepage</title>\n')
+        f.write('    </head>\n')
+        f.write('    <body>\n')
+        f.write('        <h1>Device Discovery Homepage</h1>\n')
+        f.write('        <ul>\n')
+        f.write('            <li><a href="/discover_devices">Discover Devices</a></li>\n')
+        f.write('            <li><a href="/read_programs">Read Programs</a></li>\n')
+        f.write('            <li><a href="/read_tags">Read Tags</a></li>\n')
+        f.write('        </ul>\n')
+        f.write('    </body>\n')
 # Create the devices.html file if it does not exist
 if not os.path.exists('templates/devices.html'):
     with open('templates/devices.html', 'w') as f:
