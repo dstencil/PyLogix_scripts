@@ -28,7 +28,7 @@ def discover_devices():
                 f.writerow([device.IPAddress, device.ProductName, device.Vendor, device.Revision, device.SerialNumber,device.DeviceID]) 
               
            
-            print(dictionary)
+            return dictionary
         
     # Read the CSV file
     df = pd.read_csv('devicestore.csv')
@@ -46,6 +46,26 @@ def discover_devices():
     # Pass the HTML string to the template
     return render_template('devices.html', devices=html_string)
 
+
+@app.route('/read_programs', methods=['POST'])
+def read_programs():
+    df = pd.read_csv('devicestore.csv')
+    programs = []
+
+    for index, row in df.iterrows():
+        comm.IPAddress = row['IP Address']
+        program = comm.GetProgramsList()
+        for p in program.Value:
+            programs.append({'Program Name': p, 'IP Address': str(comm.IPAddress)})
+
+    with open('programstore.csv', 'w') as f:
+        f = csv.writer(f, delimiter=',', lineterminator = '\n', quotechar='/',quoting=csv.QUOTE_MINIMAL)
+        f.writerow(fieldnames)
+        for program in programs:
+            f.writerow([program['Program Name'], program['IP Address']]) 
+
+    return 'Programs stored to CSV file.'
+
+
 if __name__ == '__main__':
     app.run(debug=True)
-```
